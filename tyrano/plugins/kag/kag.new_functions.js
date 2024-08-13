@@ -1066,8 +1066,10 @@ tyrano.plugin.kag.tag.translateSystem = {
             translation = this.translationsInterface[text][this.langTranslate];
         }
 
-        if (translation) {
+        if (translation && typeof translation === 'string') {
             textNode.nodeValue = translation;
+        } else {
+            console.warn("Translation is not a string or is missing:", translation);
         }
     },
 
