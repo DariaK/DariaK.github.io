@@ -1,7 +1,5 @@
-;=========Information about the preset character 
-;Shrek
-[chara_new  name="Shrek"  jname="Shrek"  storage="chara/1/png-clipart-shrek-shrek-superslam-princess-fiona-shrek-the-musical-shrek-film-series-shrek-food-cartoons-thumbnail.png"  ]
+;=========Информация о предустановленном персонаже 
 
-;=========Variable declaration part 
+;=========Часть объявления переменной 
 [iscript] 
 [endscript] 

@@ -600,7 +600,7 @@ tyrano.plugin.kag.tag.chara_show = {
 
         var savedPm = savedData[pm.name] || {};
 
-        if (pm.left === "" && pm.top === "") {
+        if (pm.left === "0" && pm.top === "0") {
             pm.left = savedPm.left || pm.left;
             pm.top = savedPm.top || pm.top;
         } else {

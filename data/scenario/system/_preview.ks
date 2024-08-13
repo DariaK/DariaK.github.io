@@ -1,2 +1,3 @@
-[preload  storage="./data/bgimage/1708668203_flomaster-top-p-fon-shreka-instagram-narisovannie-1.jpg"  ]
+[preload  storage="./data/bgimage/title.jpg"  ]
+[preload  storage="./data/fgimage/default/logo_vne_game.png"  ]
 [return] 
