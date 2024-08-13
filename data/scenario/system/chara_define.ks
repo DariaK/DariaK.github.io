@@ -1,6 +1,6 @@
 ;=========Информация о предустановленном персонаже 
-;Гаррет
-[chara_new  name="Гаррет"  jname="Гаррет"  storage="chara/1/photo_2024-07-17_23-59-17.png"  ]
+;Shrek
+[chara_new  name="Shrek"  jname="Shrek"  storage="chara/1/png-clipart-shrek-shrek-superslam-princess-fiona-shrek-the-musical-shrek-film-series-shrek-food-cartoons-thumbnail.png"  ]
 
 ;=========Часть объявления переменной 
 [iscript] 
