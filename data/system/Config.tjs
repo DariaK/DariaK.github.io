@@ -1,4 +1,4 @@
-//Включить полноэкранный режим　
+//Enable fullscreen mode
 ;debugMenu.visible=false
 ;configSave=webstorage
 ;global.config_version=1.0
@@ -84,3 +84,4 @@
 ;defaultLinkColor=0x0080ff
 ;defaultLinkOpacity=64
 ;vertical=false
+;version=4.00

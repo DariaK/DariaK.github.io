@@ -1,5 +1,10 @@
 ;[hidemenubutton]
 
+[varSetting  valueRandom="0-0"  varName="sf.fakeTime"  valueNum="06:00"  arithmeticOperations="="  ]
+[varSetting  valueRandom="0-0"  varName="sf.fakeDay"  valueNum="0"  arithmeticOperations="="  ]
+[varSetting  valueRandom="0-0"  varName="sf.fakeMonth"  valueNum="0"  arithmeticOperations="="  ]
+[varSetting  valueRandom="0-0"  varName="sf.fakeYear"  valueNum=""  arithmeticOperations="="  valueText="2024"  ]
+
 [call storage="system/tyrano.ks"]
 [call storage="system/builder.ks"]
 [call storage="system/chara_define.ks"]
@@ -15,7 +20,7 @@
 
 ;[title name="now loading"]
 
-[jump storage="title_screen.ks"]
+[jump storage="scene1.ks"]
 
 ;--------------------------
 

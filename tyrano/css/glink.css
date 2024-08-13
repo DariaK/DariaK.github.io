@@ -9656,58 +9656,45 @@
 .btn_29_lime {
   position: relative;
   display: inline-block;
-  padding: 1em 2em;
-  background-color: #f4e5b7; /* Parchment-like color */
-  color: #5b4636; /* Dark brown text color */
-  font-family: Arial, sans-serif; /* Default font */
-  text-shadow: 1px 1px #a27e59, 2px 2px #3c2f24; /* Text shadows for depth */
-  border: solid 4px #b18c5a; /* Border color */
-  border-radius: 8px; /* Slight rounding of edges */
-  box-shadow: inset 0 0 0 4px #f2d7a7, inset 0 0 0 8px #b18c5a; /* Inset shadow for layered effect */
+  padding: .75em .6em;
+  background-color: #fefefe;
+  color: #93C33D;
+  text-shadow: none;
+  border-radius: 0px;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .5);
   box-sizing: border-box;
   transition: .2s ease-out;
 }
 
-.btn_29_lime::before,
 .btn_29_lime::after {
   position: absolute;
-  content: '';
+  content: "";
   width: 16px;
-  height: 16px;
-  background: #b18c5a; /* Background color of pixel elements */
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #A9CF52;
+  transition: .2s ease-out;
   z-index: -1;
-}
-
-.btn_29_lime::before {
-  top: -4px;
-  left: -4px;
-  border-top: solid 4px #5b4636;
-  border-left: solid 4px #5b4636;
-}
-
-.btn_29_lime::after {
-  bottom: -4px;
-  right: -4px;
-  border-bottom: solid 4px #5b4636;
-  border-right: solid 4px #5b4636;
 }
 
 .btn_29_lime:hover {
-  background-color: #e0d2a1; /* Slightly darker parchment on hover */
+  color: #fefefe;
+}
+
+.btn_29_lime:hover::after {
+  width: 100%;
 }
 
 .btn_29_lime:active {
-  transform: scale(.96) translateY(2px); /* Button press effect */
-}
-.btn_29_lime::after {
-  position: absolute;
-  content: '';
-  width: 16px;
-  height: 16px;
-  background: #b18c5a; /* Background color of pixel elements */
-  z-index: -1;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, .3);
+  transform: translateY(3px);
 }
 
+.btn_29_lime:active::after {
+  background-color: #93C33D;
+}
 
 
 /* green */
@@ -10749,53 +10736,6 @@
   transform: scale(.96) translateY(3px);
 }
 
-/* Medieval Scroll Button with Default Font */
-.btn_8bit_scroll {
-  position: relative;
-  display: inline-block;
-  padding: 1em 2em;
-  background-color: #f4e5b7; /* Parchment-like color */
-  color: #5b4636; /* Dark brown text color */
-  font-family: Arial, sans-serif; /* Default font */
-  text-shadow: 1px 1px #a27e59, 2px 2px #3c2f24; /* Text shadows for depth */
-  border: solid 4px #b18c5a; /* Border color */
-  border-radius: 8px; /* Slight rounding of edges */
-  box-shadow: inset 0 0 0 4px #f2d7a7, inset 0 0 0 8px #b18c5a; /* Inset shadow for layered effect */
-  box-sizing: border-box;
-  transition: .2s ease-out;
-}
-
-.btn_8bit_scroll::before,
-.btn_8bit_scroll::after {
-  position: absolute;
-  content: '';
-  width: 16px;
-  height: 16px;
-  background: #b18c5a; /* Background color of pixel elements */
-  z-index: -1;
-}
-
-.btn_8bit_scroll::before {
-  top: -4px;
-  left: -4px;
-  border-top: solid 4px #5b4636;
-  border-left: solid 4px #5b4636;
-}
-
-.btn_8bit_scroll::after {
-  bottom: -4px;
-  right: -4px;
-  border-bottom: solid 4px #5b4636;
-  border-right: solid 4px #5b4636;
-}
-
-.btn_8bit_scroll:hover {
-  background-color: #e0d2a1; /* Slightly darker parchment on hover */
-}
-
-.btn_8bit_scroll:active {
-  transform: scale(.96) translateY(2px); /* Button press effect */
-}
 
 /* purple */
 .btn_32_purple {
