@@ -1,6 +1,7 @@
 ;=========Информация о предустановленном персонаже 
+;Гаррет
+[chara_new  name="Гаррет"  jname="Гаррет"  storage="chara/1/photo_2024-07-17_23-59-17.png"  ]
 
 ;=========Часть объявления переменной 
 [iscript] 
-f['achievementSystem']=''; 
 [endscript] 

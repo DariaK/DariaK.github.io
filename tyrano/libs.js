@@ -269,7 +269,7 @@
     };
 
     //パスにfgimage bgimage image が含まれていた場合、それを適応する
-    $.convertStorage = function (path) {};
+    $.convertStorage = function (path) { };
 
     $.convertColor = function (val) {
         if (val.indexOf("0x") != -1) {
@@ -872,23 +872,41 @@
     };
 
     $.setStorageFile = function (key, val) {
-        val = JSON.stringify(val);
         var fs = require("fs");
 
         var out_path = $.getExePath();
 
-        //mac os Sierra 対応
         if (process.execPath.indexOf("var/folders") != -1) {
             out_path = process.env.HOME + "/_TyranoGameData";
             if (!fs.existsSync(out_path)) {
                 fs.mkdirSync(out_path);
             }
-        } else {
-            out_path = $.getExePath();
         }
 
-        fs.writeFileSync(out_path + "/" + key + ".sav", escape(val));
+        var backupFolderPath = out_path + "/VariableBackup";
+        if (!fs.existsSync(backupFolderPath)) {
+            fs.mkdirSync(backupFolderPath);
+        }
+
+        var originalVal = JSON.stringify(val, null, 4);
+        fs.writeFileSync(out_path + "/" + key + ".sav", escape(originalVal));
+
+        if (val && val.data && Array.isArray(val.data)) {
+            var lastIndex = val.data.length - 1;
+            for (var i = lastIndex; i >= 0; i--) {
+                if (val.data[i].stat && val.data[i].stat.f) {
+                    var fData = val.data[i].stat.f;
+                    var jsonString = JSON.stringify(fData, null, 4);
+                    fs.writeFileSync(backupFolderPath + "/bcSaveData.json", jsonString);
+                    break;
+                }
+            }
+        } else {
+            console.log("Данные 'f' не найдены. Файл 'bcSaveData.json' не создан.");
+        }
+
     };
+
 
     $.getStorageFile = function (key) {
         try {
@@ -1232,8 +1250,8 @@ jQuery.extend(jQuery.easing, {
         } else var s = (p / (2 * Math.PI)) * Math.asin(c / a);
         return (
             a *
-                Math.pow(2, -10 * t) *
-                Math.sin(((t * d - s) * (2 * Math.PI)) / p) +
+            Math.pow(2, -10 * t) *
+            Math.sin(((t * d - s) * (2 * Math.PI)) / p) +
             c +
             b
         );
@@ -1252,16 +1270,16 @@ jQuery.extend(jQuery.easing, {
         if (t < 1)
             return (
                 -0.5 *
-                    (a *
-                        Math.pow(2, 10 * (t -= 1)) *
-                        Math.sin(((t * d - s) * (2 * Math.PI)) / p)) +
+                (a *
+                    Math.pow(2, 10 * (t -= 1)) *
+                    Math.sin(((t * d - s) * (2 * Math.PI)) / p)) +
                 b
             );
         return (
             a *
-                Math.pow(2, -10 * (t -= 1)) *
-                Math.sin(((t * d - s) * (2 * Math.PI)) / p) *
-                0.5 +
+            Math.pow(2, -10 * (t -= 1)) *
+            Math.sin(((t * d - s) * (2 * Math.PI)) / p) *
+            0.5 +
             c +
             b
         );

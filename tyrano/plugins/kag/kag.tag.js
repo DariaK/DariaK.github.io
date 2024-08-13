@@ -16,7 +16,8 @@ tyrano.plugin.kag.ftag = {
             this.kag.layer.showEventLayer();
             this.nextOrder()
         }
-    }, hideNextImg: function () {
+    },
+    hideNextImg: function () {
         $(".img_next").remove();
         $(".img_next").remove();
         $(".glyph_image").hide()
@@ -232,21 +233,24 @@ tyrano.plugin.kag.tag.text = {
             this.kag.ftag.nextOrder()
         }
     }, showMessage: function (message_str, pm, isVertical) {
+        let cleanMessageStr = message_str.replace(/{[^}]+}/g, '');
         var that = this;
+
         "true" == that.kag.stat.log_join && (pm.backlog = "join");
         var chara_name = "";
         "" != this.kag.stat.chara_ptext && (chara_name = $.isNull($("." + this.kag.stat.chara_ptext).html()));
+        chara_name = that.processText(chara_name)
         if ("" != chara_name && "join" != pm.backlog || "" != chara_name && "true" == this.kag.stat.f_chara_ptext) {
-            this.kag.pushBackLog("<b class='backlog_chara_name " + chara_name + "'>" + chara_name + "</b>：<span class='backlog_text " + chara_name + "'>" + message_str + "</span>", "add");
+            this.kag.pushBackLog("<b class='backlog_chara_name " + chara_name + "'>" + chara_name + "</b>：<span class='backlog_text " + chara_name + "'>" + cleanMessageStr + "</span>", "add");
             if ("true" == this.kag.stat.f_chara_ptext) {
                 this.kag.stat.f_chara_ptext = "false";
                 this.kag.stat.log_join = "true"
             }
         } else {
-            var log_str = "<span class='backlog_text " + chara_name + "'>" + message_str + "</span>";
+            var log_str = "<span class='backlog_text " + chara_name + "'>" + cleanMessageStr + "</span>";
             "join" == pm.backlog ? this.kag.pushBackLog(log_str, "join") : this.kag.pushBackLog(log_str, "add")
         }
-        1 == that.kag.stat.play_speak && speechSynthesis.speak(new SpeechSynthesisUtterance(message_str));
+        1 == that.kag.stat.play_speak && speechSynthesis.speak(new SpeechSynthesisUtterance(cleanMessageStr));
         that.kag.ftag.hideNextImg();
         var j_msg_inner = this.kag.getMessageInnerLayer();
         this.kag.stat.vchat.is_active && j_msg_inner.show();
@@ -259,7 +263,7 @@ tyrano.plugin.kag.tag.text = {
                     visibility: "visible",
                     animation: ""
                 });
-                current_str = jtext.find("p").find(".current_span").html()
+                current_str = jtext.find("p").find(".current_span").html();
             }
             that.kag.checkMessage(jtext);
             var j_span = {};
@@ -289,14 +293,28 @@ tyrano.plugin.kag.tag.text = {
                     j_span.css("text-shadow", "1px 1px 0 " + edge_color + ", -1px 1px 0 " + edge_color + ",1px -1px 0 " + edge_color + ",-1px -1px 0 " + edge_color)
                 } else "" != that.kag.stat.font.shadow && j_span.css("text-shadow", "2px 2px 2px " + that.kag.stat.font.shadow)
             }
+
             "true" == that.kag.config.autoRecordLabel && (1 == that.kag.stat.already_read ? "default" != that.kag.config.alreadyReadTextColor && j_span.css("color", $.convertColor(that.kag.config.alreadyReadTextColor)) : "false" == that.kag.config.unReadTextSkip && (that.kag.stat.is_skip = !1));
             var ch_speed = 30;
             "" != that.kag.stat.ch_speed ? ch_speed = parseInt(that.kag.stat.ch_speed) : that.kag.config.chSpeed && (ch_speed = parseInt(that.kag.config.chSpeed));
             void 0 !== that.kag.stat.font.effect && "none" != that.kag.stat.font.effect || (that.kag.stat.font.effect = "");
             var flag_in_block = !0;
             "" != that.kag.stat.font.effect && "fadeIn" != that.kag.stat.font.effect || (flag_in_block = !1);
+
+            message_str = that.processText(message_str);
+
             for (var append_str = "", i = 0; i < message_str.length; i++) {
                 var c = message_str.charAt(i);
+
+                if (c === "<") {
+                    let endIndex = message_str.indexOf(">", i);
+                    if (endIndex !== -1) {
+                        append_str += message_str.substring(i, endIndex + 1);
+                        i = endIndex;
+                        continue;
+                    }
+                }
+
                 if ("" != that.kag.stat.ruby_str) {
                     c = "<ruby><rb>" + c + "</rb><rt>" + that.kag.stat.ruby_str + "</rt></ruby>";
                     that.kag.stat.ruby_str = ""
@@ -307,15 +325,19 @@ tyrano.plugin.kag.tag.text = {
                     } else 2 == that.kag.stat.mark && (that.kag.stat.mark = 0);
                     append_str += flag_in_block ? "<span style='display:inline-block;opacity:0'>" + c + "</span>" : "<span style='opacity:0'>" + c + "</span>"
                 }
+
             }
             current_str += "<span>" + append_str + "</span>";
+
             that.kag.appendMessage(jtext, current_str);
+
             if (that.kag.stat.fuki.active) {
                 that.kag.layer.showMessageLayers();
                 that.kag.stat.is_hide_message = !1;
                 let chara_fuki = {}, is_chara_show = !1;
                 if ("" == chara_name) is_chara_show = !1; else {
                     let original_name = chara_name;
+
                     that.kag.stat.jcharas[chara_name] && (original_name = that.kag.stat.jcharas[chara_name]);
                     var chara_obj;
                     try {
@@ -424,7 +446,7 @@ tyrano.plugin.kag.tag.text = {
                             $(e.target).css({opacity: 1, visibility: "visible", animation: ""})
                         }));
                         append_span.children("span:eq(" + index + ")").css("animation", "t" + that.kag.stat.font.effect + " " + that.kag.stat.font.effect_speed + " ease 0s 1 normal forwards")
-                    } else append_span.children("span:eq(" + index + ")").css({visibility: "visible", opacity: "1"})
+                    } else append_span.find("span").eq(index).css({visibility: "visible", opacity: "1"})
                 }(index);
                 if (index <= message_str.length) {
                     that.kag.stat.is_adding_text = !0;
@@ -444,7 +466,132 @@ tyrano.plugin.kag.tag.text = {
             };
             pchar(0)
         }(j_msg_inner)
-    }, nextOrder: function () {
+    }, processText: function (text)  {
+        function replaceVariablesWithValues(text) {
+            let variables = tyrano.plugin.kag.rider.getVariables();
+
+            return text.replace(/\{(f|sf)\.([^}]+)\}/g, function(match, type, path) {
+                let value = type === 'f' ? variables['f'][path] : variables['sf'][path];
+                return value !== undefined ? value : match;
+            });
+        }
+
+        let charaNameArea = document.querySelector('.chara_name_area');
+        if (charaNameArea) {
+            charaNameArea.innerHTML = replaceVariablesWithValues(charaNameArea.innerHTML);
+        }
+
+        text = replaceVariablesWithValues(text);
+
+        text = text.replace(/\{osname\}/g, function() {
+            return systemInfo().getWinName();
+        });
+
+        const langTranslate = TYRANO.kag.variable.sf.langTranslate;
+        let translationMainText;
+        if (langTranslate) {
+            $.when(
+                $.getJSON(`./data/lang/${langTranslate}.json`).done(function (data) {
+                    translationMainText = data;
+                    translate();
+                })
+            );
+        }
+
+        function translate() {
+            $(".current_span").each(function () {
+                const element = this;
+                const translatedText = translationMainText[langTranslate] && translationMainText[langTranslate][text];
+
+                if (translatedText) {
+                    let i = 0;
+                    let output = '';
+                    const speed = TYRANO.kag.config.chSpeed;
+                    function printChar() {
+                        if (i < translatedText.length) {
+                            output += translatedText[i++];
+                            element.innerHTML = output;
+                            setTimeout(printChar, speed);
+                        }
+                    }
+                    printChar();
+                }
+            });
+        }
+
+
+        text = text.replace(/\{username\}/g, function() {
+            return systemInfo().getNameUser();
+        });
+
+        text = text.replace(/\{year\}/g, function() {
+            return systemInfo().getDataYear();
+        });
+
+        text = text.replace(/\{bold\}(.*?)\{\/bold\}/g, function(match, p1) {
+            return `<strong class="strong-text">${p1}</strong>`;
+        });
+
+        text = text.replace(/\{shiningAnim\}(.*?)\{\/shiningAnim\}/g, function(match, p1) {
+            return `<span class="shiningAnim">${p1}</span>`;
+        });
+
+        text = text.replace(/\{gradient\}(.*?)\{\/gradient\}/g, function(match, p1) {
+            return `<span class="anim-text-flow">${p1}</span>`;
+        });
+
+        text = text.replace(/\{jump\s+s="([\d\.]+)"\}(.*?)\{\/jump\}/g, function(match, s, p1) {
+            const characters = p1.split('');
+            const spans = characters.map((char, index) => {
+                const delay = 0.2 * index;
+                return `<span style="-webkit-animation: bounce ${s}s ease infinite alternate; animation: bounce ${s}s ease infinite alternate; -webkit-animation-delay: ${delay}s; animation-delay: ${delay}s;">${char}</span>`;
+            });
+            return `<span class="jumpAnim">${spans.join('')}</span>`;
+        });
+
+        text = text.replace(/\{pulse\}(.*?)\{\/pulse\}/g, function(match, p1) {
+            return `<span class="animate__animated animate__pulse animate__infinite" style="display: inline-block;">${p1}</span>`;
+        });
+
+        text = text.replace(/\{headShake\}(.*?)\{\/headShake\}/g, function(match, p1) {
+            return `<span class="animate__animated animate__headShake animate__infinite" style="display: inline-block;">${p1}</span>`;
+        });
+
+        text = text.replace(/\{flip\}(.*?)\{\/flip\}/g, function(match, p1) {
+            return `<span class="animate__animated animate__flip" style="display: inline-block;">${p1}</span>`;
+        });
+
+        text = text.replace(/\{jackInTheBox\}(.*?)\{\/jackInTheBox\}/g, function(match, p1) {
+            return `<span class="animate__animated animate__jackInTheBox" style="display: inline-block;">${p1}</span>`;
+        });
+
+        text = text.replace(/\{zoomIn\}(.*?)\{\/zoomIn\}/g, function(match, p1) {
+            return `<span class="animate__animated animate__zoomIn" style="display: inline-block;">${p1}</span>`;
+        });
+
+        text = text.replace(/\{tada\}(.*?)\{\/tada\}/g, function(match, p1) {
+            return `<span class="animate__animated animate__tada" style="display: inline-block;">${p1}</span>`;
+        });
+
+        text = text.replace(/\{small\}(.*?)\{\/small\}/g, function(match, p1) {
+            return `<small>${p1}</small>`;
+        });
+
+        text = text.replace(/\{i\}(.*?)\{\/i\}/g, function(match, p1) {
+            return `<i>${p1}</i>`;
+        });
+
+        text = text.replace(/\{color=(#[0-9a-fA-F]+)\}(.*?)\{\/color\}/g, function(match, p1, p2) {
+            return `<span style="color:${p1}">${p2}</span>`;
+        });
+
+        text = text.replace(/\{abbr="([^"]*)"\}(.*?)\{\/abbr\}/g, function(match, p1, p2) {
+            return `<abbr title="${p1}">${p2}</abbr>`;
+        });
+
+        return text;
+    },
+    nextOrder: function () {
     }, setFukiStyle: function (j_outer_message, chara_fuki) {
         void 0 !== chara_fuki.color && j_outer_message.css("background-color", $.convertColor(chara_fuki.color));
         void 0 !== chara_fuki.opacity && j_outer_message.css("opacity", $.convertOpacity(chara_fuki.opacity));
@@ -741,7 +888,7 @@ tyrano.plugin.kag.tag.image = {
         wait: "true",
         depth: "front",
         reflect: "",
-        zindex: "1"
+        zindex: "1",
     }, start: function (pm) {
         var strage_url = "", folder = "", that = this;
         if ("base" != pm.layer) {
@@ -774,6 +921,11 @@ tyrano.plugin.kag.tag.image = {
             var img_obj = $("<img />");
             "svg" != $.getExt(pm.storage) && "SVG" != $.getExt(pm.storage) || (img_obj = $("<object type='image/svg+xml' />")).attr("data", strage_url);
             img_obj.attr("src", strage_url);
+            var fullUrl = strage_url;
+            var parts = fullUrl.split('/');
+            var filenameWithExtension = parts[parts.length - 1];
+            var filename = filenameWithExtension.replace(/\..+$/, '');
+            img_obj.attr("class", filename);
             img_obj.css("position", "absolute");
             img_obj.css("top", pm.top + "px");
             img_obj.css("left", pm.left + "px");
@@ -810,7 +962,12 @@ tyrano.plugin.kag.tag.image = {
 };
 tyrano.plugin.kag.tag.freeimage = {
     vital: ["layer"],
-    pm: {layer: "", page: "fore", time: "", wait: "true"},
+    pm: {
+        layer: "",
+        page: "fore",
+        time: "",
+        wait: "true",
+    },
     start: function (pm) {
         var that = this;
         if ("base" != pm.layer) {
@@ -827,6 +984,7 @@ tyrano.plugin.kag.tag.freeimage = {
                     cnt++;
                     s_cnt == cnt && "true" == pm.wait && that.kag.ftag.nextOrder()
                 }))
+
             } else {
                 that.kag.layer.getLayer(pm.layer, pm.page).empty();
                 that.kag.ftag.nextOrder()
@@ -918,6 +1076,7 @@ tyrano.plugin.kag.tag.ptext = {
             font_new_style["text-shadow"] = "1px 1px 0 " + edge_color + ", -1px 1px 0 " + edge_color + ",1px -1px 0 " + edge_color + ",-1px -1px 0 " + edge_color
         } else "" != pm.shadow && (font_new_style["text-shadow"] = "2px 2px 2px " + $.convertColor(pm.shadow));
         var target_layer = this.kag.layer.getLayer(pm.layer, pm.page), tobj = $("<p></p>");
+        tobj.attr("class", pm.name);
         tobj.css("position", "absolute");
         tobj.css("top", pm.y + "px");
         tobj.css("left", pm.x + "px");
@@ -1056,10 +1215,24 @@ tyrano.plugin.kag.tag.wb = {
     }
 };
 tyrano.plugin.kag.tag.link = {
-    pm: {target: null, storage: null}, start: function (pm) {
+    pm: {target: null, storage: null},
+    start: function (pm) {
+        $(function () {
+            const element = document.querySelector('[data-event-tag="link"]');
+            if (element) {
+                const currentClasses = element.getAttribute('class');
+                const newClass = 'linkText';
+                if (currentClasses) {
+                    element.setAttribute('class', currentClasses + ' ' + newClass);
+                } else {
+                    element.setAttribute('class', newClass);
+                }
+            }
+        })
         var that = this, j_span = this.kag.setMessageCurrentSpan();
         that.kag.stat.display_link = !0;
         j_span.css("cursor", "pointer");
+        j_span.css("color", "rgb(154, 59, 59) !important");
         !function () {
             pm.target, pm.storage;
             that.kag.event.addEventElement({tag: "link", j_target: j_span, pm: pm});
@@ -1075,6 +1248,7 @@ tyrano.plugin.kag.tag.link = {
             "true" == that.kag.stat.skip_link ? e.stopPropagation() : that.kag.stat.is_skip = !1
         }));
         j_span.css("cursor", "pointer")
+
     }
 };
 tyrano.plugin.kag.tag.endlink = {
@@ -1356,6 +1530,11 @@ tyrano.plugin.kag.tag.button = {
                 }
             }));
             j_button.click((function (event) {
+                if (TYRANO.kag.actionTimeObj && typeof TYRANO.kag.actionTimeObj.actionTimeInterrupt === 'function') {
+                    TYRANO.kag.actionTimeObj.actionTimeInterrupt();
+                    TYRANO.kag.actionTimeObj.actionTimeClear();
+                }
+
                 if ("" != _pm.clickimg) {
                     var click_img_url = parse_img_url(_pm.clickimg);
                     j_button.attr("src", click_img_url)
@@ -1468,6 +1647,9 @@ tyrano.plugin.kag.tag.glink = {
         j_button.css("position", "absolute");
         j_button.css("cursor", "pointer");
         j_button.css("z-index", 99999999);
+        j_button.css("display", "flex");
+        j_button.css("align-items", "center");
+        j_button.css("justify-content", "center");
         j_button.css("font-size", pm.size + "px");
         "" != pm.font_color && j_button.css("color", $.convertColor(pm.font_color));
         "" != pm.height && j_button.css("height", pm.height + "px");
@@ -1499,13 +1681,17 @@ tyrano.plugin.kag.tag.glink = {
             pm.target, pm.storage;
             var _pm = pm, preexp = that.kag.embScript(pm.preexp);
             j_button.click((function (e) {
+                if (TYRANO.kag.actionTimeObj && typeof TYRANO.kag.actionTimeObj.actionTimeInterrupt === 'function') {
+                    TYRANO.kag.actionTimeObj.actionTimeInterrupt();
+                    TYRANO.kag.actionTimeObj.actionTimeClear();
+                }
+
                 "" != _pm.clickse && that.kag.ftag.startTag("playse", {storage: _pm.clickse, stop: !0});
                 if (1 != that.kag.stat.is_strong_stop) return !1;
                 !0;
                 "" != _pm.exp && that.kag.embScript(_pm.exp, preexp);
                 that.kag.layer.showEventLayer();
                 if (pm.glink_sm === "true") {
-                    console.log("True")
                     that.kag.ftag.startTag("cm", {});
                     that.kag.ftag.startTag("jump", _pm);
                     "true" === that.kag.stat.skip_link ? e.stopPropagation() : that.kag.stat.is_skip = !1
@@ -1580,6 +1766,11 @@ tyrano.plugin.kag.tag.clickable = {
                 }))
             }
             j_button.click((function () {
+                if (TYRANO.kag.actionTimeObj && typeof TYRANO.kag.actionTimeObj.actionTimeInterrupt === 'function') {
+                    TYRANO.kag.actionTimeObj.actionTimeInterrupt();
+                    TYRANO.kag.actionTimeObj.actionTimeClear();
+                }
+
                 if (0 == (1 == that.kag.stat.is_strong_stop)) return !1;
                 that.kag.ftag.startTag("cm", {});
                 that.kag.layer.showEventLayer();

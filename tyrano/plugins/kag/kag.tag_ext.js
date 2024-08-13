@@ -18,7 +18,6 @@ tyrano.plugin.kag.tag.movie = {
         control_buttons: ""
     },
     start: function (pm) {
-        console.log(pm.control_buttons + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         if ("pc" != $.userenv()) {
             this.kag.layer.showEventLayer();
             if ($.isTyranoPlayer()) this.playVideo(pm); else {
@@ -596,6 +595,19 @@ tyrano.plugin.kag.tag.chara_show = {
     },
     start: function (pm) {
         var that = this, cpm = this.kag.stat.charas[pm.name], array_storage = [];
+
+        var savedData = JSON.parse(localStorage.getItem('settingCharacter2D')) || {};
+
+        var savedPm = savedData[pm.name] || {};
+
+        if (pm.left === "0" && pm.top === "0") {
+            pm.left = savedPm.left || pm.left;
+            pm.top = savedPm.top || pm.top;
+        } else {
+            savedData[pm.name] = pm;
+            localStorage.setItem('settingCharacter2D', JSON.stringify(savedData));
+        }
+
         if (null != cpm) {
             var check_obj = $(".layer_fore").find("." + pm.name);
             check_obj.stop(!0, !0);
@@ -627,6 +639,9 @@ tyrano.plugin.kag.tag.chara_show = {
                 var img_obj = $("<img />");
                 img_obj.attr("src", storage_url);
                 img_obj.addClass("chara_img");
+
+                j_chara_root.attr("data-pm", JSON.stringify(pm))
+                j_chara_root.attr("data-name-char", pm.name)
                 j_chara_root.append(img_obj);
                 if ("" != pm.width) {
                     var width = parseInt(pm.width);
@@ -674,39 +689,23 @@ tyrano.plugin.kag.tag.chara_show = {
                     "back" == pm.depth ? target_layer.prepend(j_chara_root).show() : target_layer.append(j_chara_root).show();
                     var chara_num = 1;
                     that.kag.layer.hideEventLayer();
-                    if ("true" == that.kag.stat.chara_pos_mode && "0" == pm.left) {
-                        "0" != pm.top ? j_chara_root.css("top", parseInt(pm.top)) : j_chara_root.css("bottom", 0);
-                        var chara_cnt = target_layer.find(".tyrano_chara").length,
-                            sc_width = parseInt(that.kag.config.scWidth),
-                            center = (parseInt(that.kag.config.scHeight), Math.floor(parseInt(j_chara_root.css("width")) / 2)),
-                            base = Math.floor(sc_width / (chara_cnt + 2)), tmp_base = base, first_left = base - center;
-                        j_chara_root.css("left", first_left + "px");
-                        var array_tyrano_chara = target_layer.find(".tyrano_chara").get().reverse();
-                        $(array_tyrano_chara).each((function () {
-                            chara_num++;
-                            tmp_base += base;
-                            var j_chara = $(this);
-                            center = Math.floor(parseInt(j_chara.css("width")) / 2);
-                            var left = tmp_base - center;
-                            "false" == that.kag.stat.chara_anim ? j_chara.stop(!0, !0).fadeTo(parseInt(that.kag.cutTimeWithSkip(pm.time)), 0, (function () {
-                                j_chara.css("left", left);
-                                j_chara.stop(!0, !0).fadeTo(parseInt(that.kag.cutTimeWithSkip(that.kag.stat.pos_change_time)), 1, (function () {
-                                    if (0 == --chara_num) {
-                                        that.kag.layer.showEventLayer();
-                                        "true" == pm.wait && that.kag.ftag.nextOrder()
-                                    }
-                                }))
-                            })) : j_chara.stop(!0, !0).animate({left: left}, parseInt(that.kag.cutTimeWithSkip(that.kag.stat.pos_change_time)), that.kag.stat.chara_effect, (function () {
-                                if (0 == --chara_num) {
-                                    that.kag.layer.showEventLayer();
-                                    "true" == pm.wait && that.kag.ftag.nextOrder()
-                                }
-                            }))
-                        }))
-                    } else {
-                        j_chara_root.css("top", pm.top + "px");
-                        j_chara_root.css("left", pm.left + "px")
-                    }
+
+                    j_chara_root.css({
+                        top: pm.top + "px",
+                        left: pm.left + "px"
+                    });
+
+                    $(".tyrano_chara:visible").each(function() {
+                        var char_name = $(this).attr("data-name-char");
+                        if (char_name !== pm.name) {
+                            var char_saved_pm = savedData[char_name] || {};
+                            $(this).animate({
+                                top: char_saved_pm.top + "px",
+                                left: char_saved_pm.left + "px"
+                            }, parseInt(that.kag.cutTimeWithSkip(pm.time)), that.kag.stat.chara_effect);
+                        }
+                    });
+
                     setTimeout((function () {
                         var width = img_obj.css("width"), height = img_obj.css("height");
                         j_chara_root.css("width", width);
@@ -732,9 +731,13 @@ tyrano.plugin.kag.tag.chara_show = {
                     })
                 }))
             } else that.kag.ftag.nextOrder()
-        } else this.kag.error("Указанный персонаж「" + pm.name + "」не создан черз [chara_new]")
+        } else this.kag.error("Указанный персонаж「" + pm.name + "」не создан через [chara_new]")
     }
 };
+
+
+
+
 tyrano.plugin.kag.tag.chara_hide = {
     vital: ["name"],
     pm: {page: "fore", layer: "0", name: "", wait: "true", pos_mode: "true", time: "1000"},
@@ -756,6 +759,13 @@ tyrano.plugin.kag.tag.chara_hide = {
             img_obj.stop(!0, !0).animate({opacity: "hide"}, {
                 duration: parseInt(that.kag.cutTimeWithSkip(pm.time)), easing: "linear", complete: function () {
                     img_obj.remove();
+
+                    var savedData = JSON.parse(localStorage.getItem('settingCharacter2D')) || {};
+                    if (savedData[pm.name]) {
+                        savedData[pm.name].is_show = "false";
+                        localStorage.setItem('settingCharacter2D', JSON.stringify(savedData));
+                    }
+
                     if ("true" == that.kag.stat.chara_pos_mode && "true" == pm.pos_mode) {
                         var chara_cnt = target_layer.find(".tyrano_chara").length,
                             sc_width = parseInt(that.kag.config.scWidth),
@@ -798,6 +808,7 @@ tyrano.plugin.kag.tag.chara_hide = {
         } else that.kag.ftag.nextOrder()
     }
 };
+
 tyrano.plugin.kag.tag.chara_hide_all = {
     vital: [],
     pm: {page: "fore", layer: "0", wait: "true", time: "1000"},
@@ -1107,83 +1118,11 @@ tyrano.plugin.kag.tag.free_filter = {
 tyrano.plugin.kag.tag.web = {
     vital: ["url"], pm: {url: ""}, start: function (pm) {
         if (-1 == pm.url.indexOf("http")) window.open(pm.url); else if ($.isNWJS()) {
-            require("nw.gui").Shell.openExternal(pm.url)
+            const { shell } = require("electron");
+            shell.openExternal(pm.url);
         } else if ($.isElectron()) {
             require("electron").shell.openExternal(pm.url)
         } else $.isTyranoPlayer() ? $.openWebFromApp(pm.url) : window.open(pm.url);
         this.kag.ftag.nextOrder()
-    }
-};
-
-// FaceChar - Размещение картинок перед текстбоксом.
-tyrano.plugin.kag.tag.face_char = {
-    vital: ["face_char_select"],
-    pm: {
-        face_char_select: "",
-        face_char_url: "",
-        face_char_location: "",
-        face_char_position: "",
-        face_char_position_left: "",
-        face_char_position_bottom: "",
-        face_char_zoom: "",
-        face_char_text_left: "",
-        face_char_text_width: "",
-        face_char_id: ""
-    },
-    start: function (pm) {
-        let html = '\
-                <div class="face_char_container">\
-                    <img class="face_char_img layer_event_click" id="'+pm.face_char_id+'" style="object-fit: cover;border: none;" src="data/fgimage/' + pm.face_char_url + '">\
-                </div>\
-                ';
-        if (pm.face_char_url !== "") {
-            $('.message0_fore').append(html)
-        }
-        if (pm.face_char_location === "true") {
-            $(".face_char_container").css({
-                position: "absolute",
-                zIndex: "100",
-
-            })
-        } else {
-            $(".face_char_container").css({
-                position: "absolute",
-                zIndex: "0"
-            })
-        }
-        if (pm.face_char_position === "left") {
-            $(".face_char_container").css({
-                left: pm.face_char_position_left + "px",
-                bottom: pm.face_char_position_bottom + "px"
-            })
-        } else {
-            $(".face_char_container").css({
-                right: pm.face_char_position_left + "px",
-                bottom: pm.face_char_position_bottom + "px"
-            })
-        }
-        if (pm.face_char_zoom !== "") {
-            $(".face_char_img").css({
-                zoom: pm.face_char_zoom
-            })
-        }
-
-
-        $(".message_inner p").css({
-            left: pm.face_char_text_left + "px",
-            width: pm.face_char_text_width + "px"
-        })
-        console.log(pm.face_char_text_left + " " + pm.face_char_text_width)
-
-        TYRANO.kag.ftag.nextOrder();
-    }
-};
-tyrano.plugin.kag.tag.face_char_delete = {
-    start: function () {
-        $(".face_char_container").remove()
-
-        TYRANO.kag.ftag.startTag("cm");
-        TYRANO.kag.ftag.nextOrder();
-        TYRANO.kag.layer.showEventLayer();
     }
 };

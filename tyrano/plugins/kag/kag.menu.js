@@ -94,6 +94,14 @@ tyrano.plugin.kag.menu = {
             that.setMenu(j_save, cb)
         }))
     }, doSave: function (num, cb) {
+        localStorage.setItem('fakeYear', variableManipulation().getSFValueVar("fakeYear"));
+        localStorage.setItem('fakeMonth', window.months.indexOf(variableManipulation().getSFValueVar("fakeMonth")).toString());
+        localStorage.setItem('fakeDayNumber', variableManipulation().getSFValueVar("fakeDayNumber"));
+        localStorage.setItem('fakeDay', window.fakeDaysOfWeek.indexOf(variableManipulation().getSFValueVar("fakeDay")).toString());
+        localStorage.setItem('fakeTime', variableManipulation().getSFValueVar("fakeTime"));
+
+        window.loadGameStatus = false;
+
         var array_save = this.getSaveData(), data = {}, that = this;
         if (null == this.snap) this.snapSave(this.kag.stat.current_save_str, (function () {
             (data = that.snap).save_date = $.getNowDate() + "　" + $.getNowTime();
@@ -279,6 +287,29 @@ tyrano.plugin.kag.menu = {
             that.setMenu(j_save, cb)
         }))
     }, loadGame: function (num) {
+        if (window.timeSettingObg) {
+            window.getFakeSaveDayNum = localStorage.getItem("fakeDayNumber") ? Number(localStorage.getItem("fakeDayNumber")) : null;
+            window.timeSettingObg.time = localStorage.getItem("fakeTime") || null;
+            window.timeSettingObg.year = localStorage.getItem("fakeYear") || null;
+            window.timeSettingObg.month = localStorage.getItem("fakeMonth") ? Number(localStorage.getItem("fakeMonth")) : null;
+            window.timeSettingObg.day = localStorage.getItem("fakeDay") ? Number(localStorage.getItem("fakeDay")) : null;
+
+            if (window.fakeTimeTimerId) {
+                clearTimeout(window.fakeTimeTimerId);
+                window.fakeTimeTimerId = null;
+            }
+
+            const internal = forInternalUse();
+            setTimeout(internal.updateFakeTime, 500);
+            if (TYRANO.kag) {
+                TYRANO.kag.dayTimerId = setTimeout(internal.getFakeDayOfWeek, 100);
+                TYRANO.kag.monthTimerId = setTimeout(internal.getFakeMonth, 100);
+                TYRANO.kag.yearTimerId = setTimeout(internal.getFakeYear, 100);
+            }
+        } else {
+            console.error("window.timeSettingObg is not defined.");
+        }
+
         var array = this.getSaveData().data;
         if ("" != array[num].save_date) {
             var auto_next = "no";
@@ -416,6 +447,10 @@ tyrano.plugin.kag.menu = {
         var insert = {name: "call", pm: {storage: "make.ks", auto_next: auto_next}, val: ""};
         this.kag.clearTmpVariable();
         this.kag.ftag.nextOrderWithIndex(data.current_order_index, data.stat.current_scenario, !0, insert, "yes")
+
+        window.loadGameStatus = true;
+        window.getLoadGameStatus();
+
     }, setMenu: function (j_obj, cb) {
         var that = this, layer_menu = this.kag.layer.getMenuLayer();
         j_obj.find(".menu_close").click((function (e) {

@@ -3,8 +3,8 @@ tyrano.plugin.kag = {
     tyrano: null,
     kag: null,
     sound_swf: null,
-    is_rider: !1,
-    is_studio: !1,
+    is_rider: false,
+    is_studio: false,
     save_key_id: "",
     save_key_val: "",
     cache_html: {},
@@ -54,7 +54,8 @@ tyrano.plugin.kag = {
                 scene_pm: {},
                 init_pm: {},
                 gyro: {pm: {}, x: 0, y: 0, enable: -1, mode: 0}
-            }, models: {}, evt: {}
+            },
+            models: {}, evt: {}
         }
     },
     stat: {
@@ -643,8 +644,18 @@ tyrano.plugin.kag = {
         style_text_after = "border-bottom-color:";
         let str_css = `\n\n\t\t.fuki_box:after,.fuki_box:before{\n\t\t    border: solid transparent;\n\t\t    content:'';\n\t\t    height:0;\n\t\t    width:0;\n\t\t    pointer-events:none;\n\t\t    position:absolute;\n\t\t    ${style_text}\n\t\t}\n\t\t`,
             str_css2 = "";
-        str_css2 = "top" == fuki_chara.sippo || "bottom" == fuki_chara.sippo ? `\n\n\t\t\t.fuki_box:after{\n\n\t\t\t    border-color: ${msg_outer_layer.css("border-color").replace(")", ",0)")};\n\t\t\t    border-top-width:${fuki_chara.sippo_height}px;\n\t\t\t    border-bottom-width:${fuki_chara.sippo_height}px;\n\t\t\t    border-left-width:${fuki_chara.sippo_width}px;\n\t\t\t    border-right-width:${fuki_chara.sippo_width}px;\n\t\t\t    margin-left: ${-1 * fuki_chara.sippo_width}px;\n\t\t\t    border-${style_text_key}-color:${msg_outer_layer.css("background-color")};\n\n\t\t\t}\n\n\t\t\t.fuki_box:before{\n\n\t\t\t    border-color: ${msg_outer_layer.css("border-color").replace(")", ",0)")};\n\t\t\t    border-top-width:${fuki_chara.sippo_height + border_size}px;\n\t\t\t    border-bottom-width:${fuki_chara.sippo_height + border_size}px;\n\t\t\t    border-left-width:${fuki_chara.sippo_width + border_size}px;\n\t\t\t    border-right-width:${fuki_chara.sippo_width + border_size}px;\n\t\t\t    margin-left: ${-1 * (fuki_chara.sippo_width + border_size)}px;\n\t\t\t    margin-${style_text_key}: ${border_size}px;\n\t\t\t    border-${style_text_key}-color:${msg_outer_layer.css("border-color")};\n\n\t\t\t}` : `\n\n\t\t\t.fuki_box:after{\n\n\t\t\t    border-color: ${msg_outer_layer.css("border-color").replace(")", ",0)")};\n\t\t\t    border-top-width:${fuki_chara.sippo_width}px;\n\t\t\t    border-bottom-width:${fuki_chara.sippo_width}px;\n\t\t\t    border-left-width:${fuki_chara.sippo_height - 2}px;\n\t\t\t    border-right-width:${fuki_chara.sippo_height - 2}px;\n\t\t\t    margin-top: ${-1 * (fuki_chara.sippo_width + 2)}px;\n\t\t\t    border-${style_text_key}-color:${msg_outer_layer.css("background-color")};\n\n\t\t\t}\n\n\t\t\t.fuki_box:before{\n\n\t\t\t    border-color: ${msg_outer_layer.css("border-color").replace(")", ",0)")};\n\t\t\t    border-top-width:${fuki_chara.sippo_width + border_size}px;\n\t\t\t    border-bottom-width:${fuki_chara.sippo_width + border_size}px;\n\t\t\t    border-left-width:${fuki_chara.sippo_height + border_size - 2}px;\n\t\t\t    border-right-width:${fuki_chara.sippo_height + border_size - 2}px;\n\t\t\t    margin-top: ${-1 * (fuki_chara.sippo_width + border_size + 2)}px;\n\t\t\t    margin-${style_text_key}: ${border_size}px;\n\t\t\t    border-${style_text_key}-color:${msg_outer_layer.css("border-color")};\n\n\t\t\t}`;
+        str_css2 = "top" == fuki_chara.sippo || "bottom" == fuki_chara.sippo ? `\n\n\t\t\t.fuki_box:after{\n\n\t\t\t    border-color: ${msg_outer_layer.css("border-color").replace(")", ",0)")};\n\t\t\t    border-top-width:${fuki_chara.sippo_height}px;\n\t\t\t    border-bottom-width:${fuki_chara.sippo_height}px;\n\t\t\t    border-left-width:${fuki_chara.sippo_width}px;\n\t\t\t    border-right-width:${fuki_chara.sippo_width}px;\n\t\t\t    margin-left: ${-1 * fuki_chara.sippo_width}px;\n\t\t\t    border-${style_text_key}-color:${msg_outer_layer.css("border-color")};\n\n\t\t\t}\n\n\t\t\t.fuki_box:before{\n\n\t\t\t    border-color: ${msg_outer_layer.css("border-color").replace(")", ",0)")};\n\t\t\t    border-top-width:${fuki_chara.sippo_height + border_size}px;\n\t\t\t    border-bottom-width:${fuki_chara.sippo_height + border_size}px;\n\t\t\t    border-left-width:${fuki_chara.sippo_width + border_size}px;\n\t\t\t    border-right-width:${fuki_chara.sippo_width + border_size}px;\n\t\t\t    margin-left: ${-1 * (fuki_chara.sippo_width + border_size)}px;\n\t\t\t    margin-${style_text_key}: ${border_size}px;\n\t\t\t    border-${style_text_key}-color:${msg_outer_layer.css("border-color")};\n\n\t\t\t}` : `\n\n\t\t\t.fuki_box:after{\n\n\t\t\t    border-color: ${msg_outer_layer.css("border-color").replace(")", ",0)")};\n\t\t\t    border-top-width:${fuki_chara.sippo_width}px;\n\t\t\t    border-bottom-width:${fuki_chara.sippo_width}px;\n\t\t\t    border-left-width:${fuki_chara.sippo_height - 2}px;\n\t\t\t    border-right-width:${fuki_chara.sippo_height - 2}px;\n\t\t\t    margin-top: ${-1 * (fuki_chara.sippo_width + 2)}px;\n\t\t\t    border-${style_text_key}-color:${msg_outer_layer.css("background-color")};\n\n\t\t\t}\n\n\t\t\t.fuki_box:before{\n\n\t\t\t    border-color: ${msg_outer_layer.css("border-color").replace(")", ",0)")};\n\t\t\t    border-top-width:${fuki_chara.sippo_width + border_size}px;\n\t\t\t    border-bottom-width:${fuki_chara.sippo_width + border_size}px;\n\t\t\t    border-left-width:${fuki_chara.sippo_height + border_size - 2}px;\n\t\t\t    border-right-width:${fuki_chara.sippo_height + border_size - 2}px;\n\t\t\t    margin-top: ${-1 * (fuki_chara.sippo_width + border_size + 2)}px;\n\t\t\t    margin-${style_text_key}: ${border_size}px;\n\t\t\t    border-${style_text_key}-color:${msg_outer_layer.css("border-color")};\n\n\t\t\t}`;
         $("#tmp_style").html(str_css + "\n" + str_css2)
+
+        let bgImagePath = fuki_chara.bgImage;
+        if (bgImagePath) {
+            $(".fuki_box").css({
+                background: `url(${bgImagePath})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat"
+            });
+        }
     },
     popAnimStack: function () {
         this.kag.tmp.num_anim > 0 && this.kag.tmp.num_anim--;

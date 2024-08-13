@@ -10,7 +10,11 @@
     <meta name="robots" content="noindex,nofollow"/>
 
     <link href="./tyrano/tyrano.css" rel="stylesheet" type="text/css"/>
+    <link href="tyrano/css/newFuncStyle.css" rel="stylesheet" type="text/css"/>
+    <link href="./tyrano/css/settingPage.css" rel="stylesheet" type="text/css"/>
+    <link href="./tyrano/css/animate.css_4.1.1_animate.min.css" rel="stylesheet" type="text/css"/>
     <link href="./tyrano/css/balloon.min.css" rel="stylesheet" type="text/css"/>
+    <link href="./tyrano/css/5.0.2_dist_css_bootstrap.min.css" rel="stylesheet" type="text/css"/>
 
 
     <link href="./tyrano/libs/jquery-ui/jquery-ui.css" rel="stylesheet" type="text/css"/>
@@ -71,7 +75,9 @@
     <script type="text/javascript" src="./tyrano/plugins/kag/kag.tag_vchat.js"></script>
     <script type="text/javascript" src="./tyrano/plugins/kag/kag.tag_ar.js"></script>
     <script type="text/javascript" src="./tyrano/plugins/kag/kag.tag_three.js"></script>
+    <script type="text/javascript" src="./tyrano/plugins/global.events.js"></script>
     <script type="text/javascript" src="./tyrano/plugins/kag/kag.new_functions.js" ></script>
+    <script type="text/javascript" src="tyrano/plugins/kag/kag.screen.effects.js" ></script>
 
     <script type="text/javascript" src="./tyrano/plugins/kag/kag.tag.js"></script>
 
@@ -81,6 +87,10 @@
     <script type="text/javascript" src="./tyrano/libs/jquery.touchSwipe.min.js"></script>
     <script type="text/javascript" src="./tyrano/libs/howler.js"></script>
     <script type="text/javascript" src="./tyrano/libs/jsQR.js"></script>
+    <script type="text/javascript" src="./tyrano/libs/p5.min.js"></script>
+    <script type="text/javascript" src="./tyrano/libs/particles.min.js"></script>
+    <script type="text/javascript" src="./tyrano/libs/sweetalert2.js"></script>
+    <script type="text/javascript" src="./tyrano/libs/dat.gui.min.js"></script>
 
 
     <script type="text/javascript" src="./tyrano/libs/lz-string.min.js"></script>
@@ -102,16 +112,17 @@
 
 <body onselectstart="return false" onContextmenu="return false" ontouchmove="event.preventDefault()">
 
-<div id="tyrano_base" class="tyrano_base" style="overflow:hidden" unselectable="on" ondragstart="return false"></div>
+<div id="tyrano_base" class="tyrano_base"
+     style="overflow:hidden"
+     unselectable="on"
+     ondragstart="return true"></div>
 <div id="vchat_base" class="vchat_base" style="overflow:hidden" unselectable="on" ondragstart="return false">
 
 
 </div>
 
 <div class="remodal-bg"></div>
-<div class="remodal" data-remodal-id="modal"
-     data-remodal-options="hashTracking:false,closeOnEscape:false,closeOnOutsideClick:false">
-
+<div class="remodal" data-remodal-id="modal" data-remodal-options="hashTracking:false,closeOnEscape:false,closeOnOutsideClick:false">
     <h1 class="remodal_title"></h1>
     <p class="remodal_txt">
     </p>

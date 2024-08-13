@@ -14,29 +14,42 @@ tyrano.plugin.kag.tag.playbgm = {
         stop: "false"
     },
     start: function (pm) {
-        var that = this;
-        if ("bgm" != pm.target || 0 != that.kag.stat.play_bgm) if ("se" != pm.target || 0 != that.kag.stat.play_se) if ("pc" != $.userenv()) {
-            this.kag.layer.hideEventLayer();
-            if (1 == this.kag.stat.is_skip && "se" == pm.target) {
-                if ("false" == pm.stop) {
-                    that.kag.layer.showEventLayer();
-                    that.kag.ftag.nextOrder()
-                }
-            } else 0 == this.kag.tmp.ready_audio ? $(".tyrano_base").on("click.bgm", (function () {
-                that.kag.readyAudio();
-                that.kag.tmp.ready_audio = !0;
-                that.play(pm);
-                $(".tyrano_base").off("click.bgm")
-            })) : that.play(pm)
-        } else 0 == this.kag.tmp.ready_audio ? $(".tyrano_base").on("click.bgm", (function () {
-            that.kag.readyAudio();
-            that.kag.tmp.ready_audio = !0;
-            that.play(pm);
-            $(".tyrano_base").off("click.bgm")
-        })) : that.play(pm); else that.kag.ftag.nextOrder(); else that.kag.ftag.nextOrder()
+        let context = this;
+
+        function playOrBindAudio() {
+            if (context.kag.tmp.ready_audio === 0) {
+                $(".tyrano_base").on("click.bgm", function() {
+                    context.kag.readyAudio();
+                    context.kag.tmp.ready_audio = true;
+                    context.play(pm);
+                    $(".tyrano_base").off("click.bgm");
+                });
+            } else {
+                context.play(pm);
+            }
+        }
+
+        function isAudioPlayable(target, statValue) {
+            return (target !== "bgm" || statValue !== 0) &&
+                (target !== "se" || statValue !== 0);
+        }
+
+        if ($.userenv() === "pc" || isAudioPlayable(pm.target, context.kag.stat.play_bgm) && isAudioPlayable(pm.target, context.kag.stat.play_se)) {
+            context.kag.layer.hideEventLayer();
+            if (context.kag.stat.is_skip === 1 && pm.target === "se" && pm.stop !== "false") {
+                context.kag.layer.showEventLayer();
+                context.kag.ftag.nextOrder();
+            } else {
+                playOrBindAudio();
+            }
+        } else {
+            playOrBindAudio();
+            context.kag.ftag.nextOrder();
+        }
     },
     play: function (pm) {
         var that = this, target = "bgm";
+
         if ("se" == pm.target) {
             target = "sound";
             this.kag.tmp.is_se_play = !0;
@@ -51,11 +64,30 @@ tyrano.plugin.kag.tag.playbgm = {
         "" !== pm.volume && (volume = parseFloat(parseInt(pm.volume) / 100));
         var ratio = 1;
         if ("bgm" === target) {
-            ratio = void 0 === this.kag.config.defaultBgmVolume ? 1 : parseFloat(parseInt(this.kag.config.defaultBgmVolume) / 100);
-            void 0 !== this.kag.stat.map_bgm_volume[pm.buf] && (ratio = parseFloat(parseInt(this.kag.stat.map_bgm_volume[pm.buf]) / 100))
+            let nameBgmVolumeGame = TYRANO.kag.kag.stat.title;
+            let savedBgmVolume = localStorage.getItem(nameBgmVolumeGame);
+            if (savedBgmVolume !== null) {
+                volume = parseFloat(savedBgmVolume) / 100;
+            }
+            // ratio = void 0 === this.kag.config.defaultBgmVolume ? 1 : parseFloat(parseInt(this.kag.config.defaultBgmVolume) / 100);
+            // void 0 !== this.kag.stat.map_bgm_volume[pm.buf] && (ratio = parseFloat(parseInt(this.kag.stat.map_bgm_volume[pm.buf]) / 100))
         } else {
-            ratio = void 0 === this.kag.config.defaultSeVolume ? 1 : parseFloat(parseInt(this.kag.config.defaultSeVolume) / 100);
-            void 0 !== this.kag.stat.map_se_volume[pm.buf] && (ratio = parseFloat(parseInt(this.kag.stat.map_se_volume[pm.buf]) / 100))
+            if (!this.kag.stat.customSeVolume) {
+                this.kag.stat.customSeVolume = {};
+            }
+
+            this.kag.stat.customSeVolume[pm.buf] = pm.volume !== undefined && pm.volume !== "" ? parseFloat(pm.volume) / 100 : 1;
+            let nameSeVolumeGame = TYRANO.kag.kag.stat.title + "_se";
+            let savedSeVolume = localStorage.getItem(nameSeVolumeGame);
+            if (savedSeVolume !== null) {
+                let globalVolume = parseFloat(savedSeVolume) / 100;
+                let baseVolume = TYRANO.kag.stat.customSeVolume[pm.buf];
+                volume = globalVolume * baseVolume;
+            } else {
+                volume = TYRANO.kag.stat.customSeVolume[pm.buf] || 1;
+            }
+            // ratio = void 0 === this.kag.config.defaultSeVolume ? 1 : parseFloat(parseInt(this.kag.config.defaultSeVolume) / 100);
+            // void 0 !== this.kag.stat.map_se_volume[pm.buf] && (ratio = parseFloat(parseInt(this.kag.stat.map_se_volume[pm.buf]) / 100))
         }
         volume *= ratio;
         var browser = $.getBrowser(), storage = pm.storage;
