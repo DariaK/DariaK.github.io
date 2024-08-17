@@ -1,2 +1,5 @@
-[preload  storage="./data/bgimage/room.jpg"  ]
+[preload  storage="./data/bgimage/сцена_1.png"  ]
+[preload  storage="./data/fgimage/chara/1/GG_mysly.png"  ]
+[preload  storage="./data/fgimage/chara/1/GG_ulybka.png"  ]
+[preload  storage="./data/bgimage/сцена_1-1.png"  ]
 [return]
