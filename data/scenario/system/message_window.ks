@@ -1,16 +1,16 @@
 
 
-		[position width=500 height=245 top=450 left=2 ]
+		[position width=1040 height=633 top=1113 left=20 ]
 
 
 		
-			[position page=fore frame="окно2.png" margint=40 marginl=10 marginr=10 marginb=10 vertical=false ]
+			[position page=fore margint=45 marginl=10 marginr=20 marginb=10 vertical=false opacity="180" radius="0" color="0x000000" ]
 		
 
-		[ptext name="chara_name_area" layer="message0" color=0xf5ebec size=25 x=144 y=456 bold="bold" edge="0x000000" shadow="undefined"]
+		[ptext name="chara_name_area" layer="message0" color=0xFFFFFF size=26 x=30 y=1123 bold="bold" edge="" shadow=""]
 
 
-		[chara_config ptext="chara_name_area" pos_mode=true time="600" memory="false" anim="true" effect="easeInOutCubic" pos_change_time="600" ]
+		[chara_config ptext="chara_name_area" pos_mode=true time="600" memory="false" anim="true" effect="easeInQuad" pos_change_time="600" ]
 
 
 		[chara_config  talk_focus="none" ]
@@ -28,7 +28,7 @@
 		;[position layer="message1" left=160 top=500 width=1000 height=200 radius=15 page=fore visible=true color="white" opacity=255 border_size="3" border_color="black" ]
 		;[position layer="message1" page=fore margint="15" marginl="20" marginr="20" marginb="20"]
 
-		[position layer="message1" width=500 height=245 top=450 left=2 ]
-		[position layer="message1" page=fore margint=5 marginl=10 marginr=10 marginb=10 vertical=false opacity="180" radius="10" color="0x000000" ]
+		[position layer="message1" width=1040 height=633 top=1113 left=20 ]
+		[position layer="message1" page=fore margint=5 marginl=10 marginr=10 marginb=10 vertical=false opacity="180" radius="0" color="0x000000" ]
 
 		

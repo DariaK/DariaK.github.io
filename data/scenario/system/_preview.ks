@@ -1,2 +1,3 @@
-[preload  storage="./data/bgimage/сцена_1-1.png"  ]
+[preload  storage="./data/bgimage/title.jpg"  ]
+[preload  storage="./data/fgimage/default/logo_vne_game.png"  ]
 [return] 

@@ -1,42 +1,33 @@
 [_tb_system_call storage=system/_preview.ks ]
 
 [mask time=10]
-[bg  storage="сцена_1.png"  time="10"  cross="false"  method="fadeIn"  ]
-[tb_show_message_window] 
-[chara_mod  name="ГГ"  time="10"  cross="false"  storage="chara/1/GG_ulybka.png"  ]
-[chara_show  name="ГГ"  time="10"  wait="true"  storage="chara/1/GG.png"  width="814"  height="1424"  left="-287"  top="5"  reflect="false"  ]
 [mask_off time=10]
-[glink  color="black"  storage="scene1.ks"  size="20"  x="3"  y="437"  width="496"  height="40"  text="“Надеюсь,&nbsp;я&nbsp;не&nbsp;испачкаю&nbsp;подол&nbsp;платья&nbsp;в&nbsp;этой&nbsp;глупой&nbsp;деревушке”."  _clickable_img="кнопка1.png"  target="*Мысль1"  glink_sm="true"  ]
-[glink  color="btn_02_yellow"  storage="scene1.ks"  size="20"  x="3"  y="531"  width="500"  height="60"  text="“Нужно&nbsp;быть&nbsp;дружелюбной&nbsp;и&nbsp;вежливой”"  _clickable_img=""  target="*Мысль_2"  glink_sm="true"  ]
-[s  ]
-[cm  ]
-*Мысль1
+[hidemenubutton]
 
-[tb_start_text mode=1 ]
-#Я
-Чем быстрее закончим, тем лучше”.[p]
-[_tb_end_text]
+[tb_clear_images]
 
-[jump  storage="scene1.ks"  target="*Сцена_1.1"  ]
-*Мысль_2
-
-[tb_start_text mode=1 ]
-#Я
-“Все же я будущая королева”. [p]
-[_tb_end_text]
-
-*Сцена_1.1
-
+[tb_keyconfig  flag="0"  ]
 [tb_hide_message_window  ]
-[chara_hide  name="ГГ"  time="1000"  wait="true"  pos_mode="true"  ]
-[bg  time="1000"  method="fadeInRight"  storage="сцена_1-1.png"  ]
-[tb_show_message_window  ]
-[tb_start_text mode=1 ]
-#. . .
-Мама, а, точнее, Ее Высочество, ехала в отдельной карете. Я еще раз вздохнула. В деревне происходили какие-то странные вещи. [p]
-Настолько странные, что нам пришлось выехать посмотреть самим. [p]
+[playbgm  volume="50"  time="1000"  loop="true"  storage="Sakura_Girl_-_Peach.mp3"  fadein="true"  ]
+[bg  storage="title.jpg"  ]
+[tb_image_show  time="1000"  storage="default/logo_vne_game.png"  width="447"  height="352"  x="382"  y="23"  _clickable_img=""  name="img_6"  ]
+*title
 
+[buttonHover  soundVolume="0.5"  storage="title_screen.ks"  target="*start"  graphic="button/start_game.png"  width="240"  height="137"  graphicH="button/start_game_h.png"  x="478"  y="349"  _clickable_img=""  ]
+[buttonHover  soundVolume="0.5"  storage="title_screen.ks"  target="*load"  graphic="button/load.png"  width="245"  height="127"  graphicH="button/load_h.png"  x="481"  y="436"  _clickable_img=""  ]
+[s  ]
+*start
 
-[_tb_end_text]
+[showmenubutton]
 
 [cm  ]
+[tb_keyconfig  flag="1"  ]
+[jump  storage="scene1.ks"  target=""  ]
+[s  ]
+*load
+
+[cm  ]
+[showload]
+
+[jump  target="*title"  storage=""  ]
+[s  ]
