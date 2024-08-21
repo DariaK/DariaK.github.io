@@ -6,8 +6,6 @@
 
 
 	
-		[showmenubutton]
-	
 
 	[cm]
 	@jump storage="scene1.ks"

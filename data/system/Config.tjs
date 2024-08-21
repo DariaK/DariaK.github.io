@@ -2,16 +2,16 @@
 ;debugMenu.visible=false
 ;configSave=webstorage
 ;global.config_version=1.0
-;System.title=Даша1234
-;projectID=Даша1234
+;System.title=Shalnaya_Imperatriza
+;projectID=Shalnaya_Imperatriza
 ;game_version=0.0
 ;ScreenRatio=fix
 ;patch_apply_auto=true
 ;ScreenCentering=true
 ;useCamera=true
 ;use3D=true
-;scWidth=1900
-;scHeight=1900
+;scWidth=1280
+;scHeight=720
 ;vchat=false
 ;vchatMenuVisible=false
 ;chSpeed=30
@@ -84,4 +84,3 @@
 ;defaultLinkColor=0x0080ff
 ;defaultLinkOpacity=64
 ;vertical=false
-;version=4.00
